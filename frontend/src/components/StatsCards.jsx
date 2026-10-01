@@ -1,7 +1,9 @@
+import { classifyStock } from '../lib/stock';
+
 export default function StatsCards({ books }) {
   const totalCopies = books.reduce((sum, book) => sum + (Number(book.copies_available) || 0), 0);
-  const lowStock = books.filter((b) => b.copies_available > 0 && b.copies_available <= 2).length;
-  const outOfStock = books.filter((b) => b.copies_available <= 0).length;
+  const lowStock = books.filter((b) => classifyStock(b.copies_available) === 'low').length;
+  const outOfStock = books.filter((b) => classifyStock(b.copies_available) === 'out').length;
   const categories = new Set(books.map((b) => b.category)).size;
 
   const stats = [

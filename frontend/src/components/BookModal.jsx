@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
 import BookForm from './BookForm';
+import { classifyStock } from '../lib/stock';
 
 function stockBadge(copies) {
   const c = Number(copies) || 0;
+  const status = classifyStock(copies);
 
-  if (c <= 0) {
+  if (status === 'out') {
     return (
       <span className="stock stock--out">
         <span className="stock__dot" aria-hidden />
@@ -13,11 +15,11 @@ function stockBadge(copies) {
     );
   }
 
-  if (c <= 2) {
+  if (status === 'low') {
     return (
       <span className="stock stock--low">
         <span className="stock__dot" aria-hidden />
-        Low stock <span className="stock--n">({c})</span>
+        Low — <span className="stock--n">{c}</span> left
       </span>
     );
   }
@@ -25,7 +27,7 @@ function stockBadge(copies) {
   return (
     <span className="stock stock--ok">
       <span className="stock__dot" aria-hidden />
-      Available <span className="stock--n">({c})</span>
+      Available <span className="stock--n">{c}</span>
     </span>
   );
 }

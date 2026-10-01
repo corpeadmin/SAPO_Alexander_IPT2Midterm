@@ -1,7 +1,10 @@
+import { classifyStock } from '../lib/stock';
+
 function Stock({ copies }) {
   const count = Number(copies) || 0;
+  const status = classifyStock(copies);
 
-  if (count <= 0) {
+  if (status === 'out') {
     return (
       <span className="stock stock--out">
         <span className="stock__dot" aria-hidden />
@@ -10,7 +13,7 @@ function Stock({ copies }) {
     );
   }
 
-  if (count <= 2) {
+  if (status === 'low') {
     return (
       <span className="stock stock--low">
         <span className="stock__dot" aria-hidden />

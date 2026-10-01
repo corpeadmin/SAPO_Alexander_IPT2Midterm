@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { bookService } from '../services/api';
 import SearchBar from '../components/SearchBar';
 import CategoryFilter from '../components/CategoryFilter';
+import StockFilter from '../components/StockFilter';
+import { matchesStock, STOCK_STATUSES } from '../lib/stock';
 import BookTable from '../components/BookTable';
 import StatsCards from '../components/StatsCards';
 import ActivityFeed from '../components/ActivityFeed';
@@ -11,6 +13,7 @@ export default function LandingPage() {
   const [books, setBooks] = useState([]);
   const [results, setResults] = useState(null);
   const [category, setCategory] = useState('');
+  const [stock, setStock] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modal, setModal] = useState(null);
@@ -41,13 +44,19 @@ export default function LandingPage() {
 
   const isSearching = results !== null;
   const hasCategory = category !== '';
+  const hasStock = stock !== '';
 
   // Options come from the full catalogue so they don't shift while searching.
   const categories = [...new Set(books.map((book) => book.category))].sort();
 
-  // Subject filter applies on top of the text search, so the two intersect.
+  // Dropdowns apply on top of the text search, so every active filter must match.
   const base = isSearching ? results : books;
-  const visible = hasCategory ? base.filter((book) => book.category === category) : base;
+  const visible = base.filter(
+    (book) =>
+      (!hasCategory || book.category === category) && matchesStock(book.copies_available, stock),
+  );
+
+  const stockLabel = STOCK_STATUSES.find((s) => s.value === stock)?.label ?? '';
 
   const openModal = (mode, book = null) => setModal({ mode, book });
 
@@ -74,22 +83,24 @@ export default function LandingPage() {
     }
   };
 
-  const emptyState = isSearching
+  // Flat description of what the reader is actually filtering on.
+  const activeFilters = [
+    isSearching && 'the search term',
+    hasCategory && category,
+    hasStock && stockLabel,
+  ].filter(Boolean);
+
+  const hasFilters = activeFilters.length > 0;
+
+  const emptyState = hasFilters
     ? {
         title: 'No matching books',
-        hint: hasCategory
-          ? `Nothing matches that search in ${category}. Try another term or subject.`
-          : 'Try a different term, or clear the search to see the full catalogue.',
+        hint: `Nothing matches ${activeFilters.join(' and ')}. Try broadening the filters.`,
       }
-    : hasCategory
-      ? {
-          title: `Nothing catalogued under ${category}`,
-          hint: 'Choose a different subject, or clear the filter.',
-        }
-      : {
-          title: 'The catalogue is empty',
-          hint: 'Add a volume to begin building the collection.',
-        };
+    : {
+        title: 'The catalogue is empty',
+        hint: 'Add a volume to begin building the collection.',
+      };
 
   return (
     <div className="page">
@@ -117,6 +128,7 @@ export default function LandingPage() {
           onChange={setCategory}
           disabled={categories.length === 0}
         />
+        <StockFilter value={stock} onChange={setStock} />
       </div>
 
       <section className="panel" aria-labelledby="catalogue-heading">
@@ -125,7 +137,7 @@ export default function LandingPage() {
             Volumes
             <span className="panel__count">
               {visible.length} {visible.length === 1 ? 'entry' : 'entries'}
-              {isSearching || hasCategory ? ' matching' : ''}
+              {hasFilters ? ' matching' : ''}
             </span>
           </h2>
           <button className="btn btn--primary" type="button" onClick={() => openModal('add')}>
