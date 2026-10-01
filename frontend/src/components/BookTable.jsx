@@ -27,18 +27,12 @@ function Stock({ copies }) {
   );
 }
 
-export default function BookTable({ books, onView, onEdit, onDelete, isFiltered }) {
+export default function BookTable({ books, emptyState, onView, onEdit, onDelete }) {
   if (books.length === 0) {
     return (
       <div className="empty">
-        <p className="empty__title">
-          {isFiltered ? 'Nothing matches that search' : 'The catalogue is empty'}
-        </p>
-        <p>
-          {isFiltered
-            ? 'Try a different term, or clear the search to see the full catalogue.'
-            : 'Add a volume to begin building the collection.'}
-        </p>
+        <p className="empty__title">{emptyState.title}</p>
+        <p>{emptyState.hint}</p>
       </div>
     );
   }

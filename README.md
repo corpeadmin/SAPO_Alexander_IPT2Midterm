@@ -11,6 +11,7 @@ The Library of Eldoria is a digital archive system designed for fantasy-themed l
 ### Core Features
 - **Full CRUD Operations**: Create, read, update, and delete book records
 - **Advanced Search**: Real-time search across title, author, category, and shelf number
+- **Subject Filter**: Narrow the catalogue to a single subject; combines with the text search
 - **Book Management**: Complete book details including title, author, category, copies available, and shelf location
 - **Inventory Tracking**: Visual indicators for stock levels (Available, Low Stock, Out of Stock)
 - **Recent Activity Feed**: Track recently modified books
@@ -77,6 +78,7 @@ SAPO_Alexander_IPT2Midterm/
 │   │   ├── components/
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── SearchBar.jsx
+│   │   │   ├── CategoryFilter.jsx
 │   │   │   ├── BookTable.jsx
 │   │   │   ├── BookModal.jsx
 │   │   │   ├── BookForm.jsx     # Shared add/edit form
@@ -268,6 +270,12 @@ The application seeds 10 fantasy-themed books on first run:
 1. Use the search bar on the landing page
 2. Type any keyword (title, author, category, shelf)
 3. Results filter in real-time
+
+### Filtering by Subject
+1. Choose a subject from the dropdown beside the search bar
+2. The catalogue narrows to that subject alone
+3. Combine it with a search term to narrow further — both filters must match
+4. Choose "All subjects" to clear the filter
 
 ### Adding a Book
 1. Click "✨ Add New Tome" button or navigate to `/add`

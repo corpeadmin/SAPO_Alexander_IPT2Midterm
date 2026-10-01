@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { bookService } from '../services/api';
 import SearchBar from '../components/SearchBar';
+import CategoryFilter from '../components/CategoryFilter';
 import BookTable from '../components/BookTable';
 import StatsCards from '../components/StatsCards';
 import ActivityFeed from '../components/ActivityFeed';
@@ -9,6 +10,7 @@ import BookModal from '../components/BookModal';
 export default function LandingPage() {
   const [books, setBooks] = useState([]);
   const [results, setResults] = useState(null);
+  const [category, setCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modal, setModal] = useState(null);
@@ -37,8 +39,15 @@ export default function LandingPage() {
   const handleResults = useCallback((data) => setResults(data), []);
   const handleClear = useCallback(() => setResults(null), []);
 
-  const isFiltered = results !== null;
-  const visible = isFiltered ? results : books;
+  const isSearching = results !== null;
+  const hasCategory = category !== '';
+
+  // Options come from the full catalogue so they don't shift while searching.
+  const categories = [...new Set(books.map((book) => book.category))].sort();
+
+  // Subject filter applies on top of the text search, so the two intersect.
+  const base = isSearching ? results : books;
+  const visible = hasCategory ? base.filter((book) => book.category === category) : base;
 
   const openModal = (mode, book = null) => setModal({ mode, book });
 
@@ -65,6 +74,23 @@ export default function LandingPage() {
     }
   };
 
+  const emptyState = isSearching
+    ? {
+        title: 'No matching books',
+        hint: hasCategory
+          ? `Nothing matches that search in ${category}. Try another term or subject.`
+          : 'Try a different term, or clear the search to see the full catalogue.',
+      }
+    : hasCategory
+      ? {
+          title: `Nothing catalogued under ${category}`,
+          hint: 'Choose a different subject, or clear the filter.',
+        }
+      : {
+          title: 'The catalogue is empty',
+          hint: 'Add a volume to begin building the collection.',
+        };
+
   return (
     <div className="page">
       <header className="page-head">
@@ -83,7 +109,15 @@ export default function LandingPage() {
 
       <StatsCards books={books} />
 
-      <SearchBar onResults={handleResults} onClear={handleClear} />
+      <div className="filters">
+        <SearchBar onResults={handleResults} onClear={handleClear} />
+        <CategoryFilter
+          categories={categories}
+          value={category}
+          onChange={setCategory}
+          disabled={categories.length === 0}
+        />
+      </div>
 
       <section className="panel" aria-labelledby="catalogue-heading">
         <div className="panel__head">
@@ -91,7 +125,7 @@ export default function LandingPage() {
             Volumes
             <span className="panel__count">
               {visible.length} {visible.length === 1 ? 'entry' : 'entries'}
-              {isFiltered ? ' matching' : ''}
+              {isSearching || hasCategory ? ' matching' : ''}
             </span>
           </h2>
           <button className="btn btn--primary" type="button" onClick={() => openModal('add')}>
@@ -106,7 +140,7 @@ export default function LandingPage() {
         ) : (
           <BookTable
             books={visible}
-            isFiltered={isFiltered}
+            emptyState={emptyState}
             onView={(book) => openModal('view', book)}
             onEdit={(book) => openModal('edit', book)}
             onDelete={handleDelete}
