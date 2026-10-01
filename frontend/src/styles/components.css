@@ -187,8 +187,8 @@
 
 .filters__select {
   width: auto;
-  min-width: 11rem;
-  flex: 0 0 auto;
+  min-width: 10rem;
+  flex: 0 1 auto;
 }
 
 .filters__select:disabled {

@@ -11,7 +11,10 @@ The Library of Eldoria is a digital archive system designed for fantasy-themed l
 ### Core Features
 - **Full CRUD Operations**: Create, read, update, and delete book records
 - **Advanced Search**: Real-time search across title, author, category, and shelf number
-- **Subject Filter**: Narrow the catalogue to a single subject; combines with the text search
+- **Subject Filter**: Narrow the catalogue to a single subject
+- **Author Filter**: Narrow the catalogue to a single author
+- **Stock Filter**: Show only in-stock, low-stock, or out-of-stock titles
+- **Combined Filtering**: Text search, subject, author and stock filters all apply together — every active filter must match
 - **Book Management**: Complete book details including title, author, category, copies available, and shelf location
 - **Inventory Tracking**: Visual indicators for stock levels (Available, Low Stock, Out of Stock)
 - **Recent Activity Feed**: Track recently modified books
@@ -78,7 +81,7 @@ SAPO_Alexander_IPT2Midterm/
 │   │   ├── components/
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── SearchBar.jsx
-│   │   │   ├── CategoryFilter.jsx
+│   │   │   ├── SelectFilter.jsx   # Shared dropdown filter
 │   │   │   ├── BookTable.jsx
 │   │   │   ├── BookModal.jsx
 │   │   │   ├── BookForm.jsx     # Shared add/edit form
@@ -89,6 +92,8 @@ SAPO_Alexander_IPT2Midterm/
 │   │   │   └── AddBookPage.jsx
 │   │   ├── services/
 │   │   │   └── api.js           # Axios instance & API calls
+│   │   ├── lib/
+│   │   │   └── stock.js         # Shared stock thresholds
 │   │   ├── styles/
 │   │   │   ├── index.css        # Imports the three layers below
 │   │   │   ├── tokens.css       # Colour, type and spacing scales
@@ -271,11 +276,30 @@ The application seeds 10 fantasy-themed books on first run:
 2. Type any keyword (title, author, category, shelf)
 3. Results filter in real-time
 
-### Filtering by Subject
-1. Choose a subject from the dropdown beside the search bar
-2. The catalogue narrows to that subject alone
-3. Combine it with a search term to narrow further — both filters must match
-4. Choose "All subjects" to clear the filter
+### Filtering the Catalogue
+
+Both dropdowns sit beside the search bar, and all filters apply together —
+a book must satisfy every active filter to appear.
+
+| Filter | Options |
+|--------|---------|
+| Search | Any text in title, author, subject or shelf |
+| Subject | Every subject present in the catalogue, or "All subjects" |
+| Author | Every author present in the catalogue, or "All authors" |
+| Stock | In stock, Low stock, Out of stock, or "Any stock level" |
+
+Subject and author options are derived from the catalogue itself, so the
+dropdowns can never offer a filter that returns nothing. Matching is
+case-sensitive and uses the exact stored spelling.
+
+Stock levels come from a single shared rule in `src/lib/stock.js`, so the table,
+the totals strip and the filter can never disagree:
+
+| Copies available | Level |
+|------------------|-------|
+| 0 | Out of stock |
+| 1–2 | Low stock |
+| 3+ | In stock |
 
 ### Adding a Book
 1. Click "✨ Add New Tome" button or navigate to `/add`

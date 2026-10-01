@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { bookService } from '../services/api';
 import SearchBar from '../components/SearchBar';
-import CategoryFilter from '../components/CategoryFilter';
-import StockFilter from '../components/StockFilter';
+import SelectFilter from '../components/SelectFilter';
 import { matchesStock, STOCK_STATUSES } from '../lib/stock';
 import BookTable from '../components/BookTable';
 import StatsCards from '../components/StatsCards';
@@ -13,6 +12,7 @@ export default function LandingPage() {
   const [books, setBooks] = useState([]);
   const [results, setResults] = useState(null);
   const [category, setCategory] = useState('');
+  const [author, setAuthor] = useState('');
   const [stock, setStock] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -44,16 +44,26 @@ export default function LandingPage() {
 
   const isSearching = results !== null;
   const hasCategory = category !== '';
+  const hasAuthor = author !== '';
   const hasStock = stock !== '';
 
   // Options come from the full catalogue so they don't shift while searching.
-  const categories = [...new Set(books.map((book) => book.category))].sort();
+  const uniqueSorted = (field) =>
+    [...new Set(books.map((book) => book[field]))]
+      .filter(Boolean)
+      .sort((a, b) => a.localeCompare(b))
+      .map((value) => ({ value, label: value }));
+
+  const subjectOptions = uniqueSorted('category');
+  const authorOptions = uniqueSorted('author');
 
   // Dropdowns apply on top of the text search, so every active filter must match.
   const base = isSearching ? results : books;
   const visible = base.filter(
     (book) =>
-      (!hasCategory || book.category === category) && matchesStock(book.copies_available, stock),
+      (!hasCategory || book.category === category) &&
+      (!hasAuthor || book.author === author) &&
+      matchesStock(book.copies_available, stock),
   );
 
   const stockLabel = STOCK_STATUSES.find((s) => s.value === stock)?.label ?? '';
@@ -87,6 +97,7 @@ export default function LandingPage() {
   const activeFilters = [
     isSearching && 'the search term',
     hasCategory && category,
+    hasAuthor && author,
     hasStock && stockLabel,
   ].filter(Boolean);
 
@@ -122,13 +133,32 @@ export default function LandingPage() {
 
       <div className="filters">
         <SearchBar onResults={handleResults} onClear={handleClear} />
-        <CategoryFilter
-          categories={categories}
+        <SelectFilter
+          id="subject-filter"
+          label="Filter by subject"
+          allLabel="All subjects"
+          options={subjectOptions}
           value={category}
           onChange={setCategory}
-          disabled={categories.length === 0}
+          disabled={subjectOptions.length === 0}
         />
-        <StockFilter value={stock} onChange={setStock} />
+        <SelectFilter
+          id="author-filter"
+          label="Filter by author"
+          allLabel="All authors"
+          options={authorOptions}
+          value={author}
+          onChange={setAuthor}
+          disabled={authorOptions.length === 0}
+        />
+        <SelectFilter
+          id="stock-filter"
+          label="Filter by stock"
+          allLabel="Any stock level"
+          options={STOCK_STATUSES}
+          value={stock}
+          onChange={setStock}
+        />
       </div>
 
       <section className="panel" aria-labelledby="catalogue-heading">
