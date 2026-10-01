@@ -1,0 +1,68 @@
+/* Design tokens. One place to change spacing, colour and type. */
+
+:root {
+  /* Surfaces — warm paper, not white. Elevation is a hairline, not a shadow. */
+  --paper: #f6f3ea;
+  --paper-raised: #fdfbf6;
+  --paper-sunk: #efeade;
+
+  /* Ink */
+  --ink: #211e1a;
+  --ink-muted: #56504a;
+  --ink-faint: #8b8479;
+
+  /* Hairlines */
+  --rule: #ded6c4;
+  --rule-strong: #c3b9a3;
+
+  /* Accents. Oxblood for intent, forest for state, brass used sparingly. */
+  --accent: #7b2d26;
+  --accent-hover: #65221d;
+  --accent-wash: #f7ece9;
+  --forest: #2f4f3a;
+  --forest-wash: #eaf0ea;
+  --brass: #96762a;
+
+  /* Type */
+  --font-display: 'IM Fell English', 'Iowan Old Style', Georgia, serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.375rem;
+  --text-xl: 1.875rem;
+  --text-2xl: 2.5rem;
+
+  /* Spacing — 4px base scale */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4rem;
+
+  --radius-sm: 2px;
+  --radius: 3px;
+  --radius-lg: 4px;
+
+  --measure: 68ch;
+  --page-max: 1140px;
+
+  --ease: cubic-bezier(0.2, 0, 0.1, 1);
+  --ring: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+}
