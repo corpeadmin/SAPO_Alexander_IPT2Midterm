@@ -50,26 +50,7 @@ export default function LandingPage() {
         </Link>
       </div>
 
-      <section className="panel" aria-labelledby="glance-heading">
-        <div className="panel__head">
-          <h2 className="panel__title" id="glance-heading">
-            At a glance
-            {books.length > 0 && <span className="panel__count">right now</span>}
-          </h2>
-        </div>
-
-        {error ? (
-          <p className="empty">
-            The catalogue could not be reached. Start the backend and reload this page.
-          </p>
-        ) : loading ? (
-          <div className="loading" role="status" aria-label="Loading collection summary">
-            <span className="loading__dot" />
-          </div>
-        ) : (
-          <StatsCards books={books} />
-        )}
-      </section>
+   
     </div>
   );
 }
