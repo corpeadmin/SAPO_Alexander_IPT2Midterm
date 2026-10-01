@@ -170,6 +170,28 @@
   font-variant-numeric: tabular-nums;
 }
 
+.panel__actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+/* Keyboard hint rendered inside a button label. */
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  padding: 3px 5px;
+  border: 1px solid var(--rule-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink-faint);
+}
+
+.btn--ghost .kbd {
+  border-color: var(--rule-strong);
+}
+
 /* ---------- Search + subject filter ---------- */
 
 .filters {
@@ -270,6 +292,15 @@
 .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* ---------- Landing page ---------- */
+
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
 }
 
 /* ---------- Table ---------- */

@@ -88,7 +88,8 @@ SAPO_Alexander_IPT2Midterm/
 │   │   │   ├── StatsCards.jsx
 │   │   │   └── ActivityFeed.jsx
 │   │   ├── pages/
-│   │   │   ├── LandingPage.jsx
+│   │   │   ├── LandingPage.jsx    # Welcome page (entry point)
+│   │   │   ├── CataloguePage.jsx  # The book list, filters and table
 │   │   │   └── AddBookPage.jsx
 │   │   ├── services/
 │   │   │   └── api.js           # Axios instance & API calls
@@ -121,6 +122,23 @@ SAPO_Alexander_IPT2Midterm/
 | DELETE | `/api/books/:id` | Delete book |
 | GET | `/api/health` | Health check |
 
+### Frontend Routes
+
+| Path | Page |
+|------|------|
+| `/` | Landing page (welcome + collection summary) |
+| `/catalogue` | Catalogue (search, filters, table, activity) |
+| `/add` | Add a book |
+
+### Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `R` | Open a random book from the current results ("Surprise me") |
+| `Esc` | Close the book dialog |
+
+`R` is ignored while typing in a field and while a dialog is open.
+
 ### Book Object Schema
 ```json
 {
@@ -137,9 +155,11 @@ SAPO_Alexander_IPT2Midterm/
 
 ## Pages
 
-1. **Landing Page (`/`)**: Main archive view with search, statistics, book table, and recent activity
-2. **Add Tome Page (`/add`)**: Form to add new books to the catalog
-3. **View/Edit Modal**: Accessible from the book table for viewing details or editing existing books
+1. **Landing Page (`/`)**: Welcome screen — the first thing you see, with a live
+   summary of the collection and links into the catalogue
+2. **Catalogue (`/catalogue`)**: Search, filters, the book table, and recent activity
+3. **Add Book (`/add`)**: Form to record a new book in the catalogue
+4. **Book Modal**: View details or edit an existing book without leaving the page
 
 ## Prerequisites
 

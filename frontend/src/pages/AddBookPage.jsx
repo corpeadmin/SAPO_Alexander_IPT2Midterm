@@ -11,7 +11,7 @@ export default function AddBookPage() {
     setError(null);
     try {
       await bookService.create(formData);
-      navigate('/');
+      navigate('/catalogue');
     } catch {
       setError('Could not add that book. Please check the details and try again.');
     }
@@ -20,7 +20,7 @@ export default function AddBookPage() {
   return (
     <div className="page">
       <header className="page-head">
-        <span className="eyebrow">Eldoria — restricted collection</span>
+        <span className="eyebrow">The Eldoria Library</span>
         <h1 className="page-head__title">Add a book</h1>
         <p className="page-head__lede">
           Record a new volume in the catalogue. All fields are required.
@@ -34,7 +34,11 @@ export default function AddBookPage() {
       )}
 
       <section className="panel" style={{ maxWidth: '34rem' }} aria-label="New book details">
-        <BookForm submitLabel="Add to library" onSubmit={handleSubmit} onCancel={() => navigate('/')} />
+        <BookForm
+          submitLabel="Add to library"
+          onSubmit={handleSubmit}
+          onCancel={() => navigate('/catalogue')}
+        />
       </section>
     </div>
   );
